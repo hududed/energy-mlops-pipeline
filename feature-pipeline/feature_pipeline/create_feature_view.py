@@ -7,7 +7,7 @@ from feature_pipeline import settings, utils
 
 def run(feature_group_version: int = 1):
     project = hopsworks.login(
-        api_key_value=settings.CREDENTIALS["FS_API_KEY"], project="energy_consumption"
+        api_key_value=settings.CREDENTIALS["FS_API_KEY"], project="energy_mlops_pipe"
     )
     fs = project.get_feature_store()
     energy_consumption_fg = fs.get_feature_group(
