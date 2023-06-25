@@ -187,7 +187,7 @@ def attach_best_model_to_feature_store(
     feature_view_version: int, training_dataset_version: int
 ) -> int:
     project = hopsworks.login(
-        api_key_value=CREDENTIALS["FS_API_KEY"], project="energy_consumption"
+        api_key_value=CREDENTIALS["FS_API_KEY"], project="energy_mlops_pipe"
     )
     fs = project.get_feature_store()
     feature_view = fs.get_feature_view(

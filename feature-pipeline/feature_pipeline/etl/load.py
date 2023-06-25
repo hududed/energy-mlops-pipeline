@@ -10,7 +10,7 @@ def to_feature_store(
 ) -> FeatureGroup:
     # Connect to feature store.
     project = hopsworks.login(
-        api_key_value=CREDENTIALS["FS_API_KEY"], project="energy_consumption"
+        api_key_value=CREDENTIALS["FS_API_KEY"], project="energy_mlops_pipe"
     )
     feature_store = project.get_feature_store()
     # Create feature group.
