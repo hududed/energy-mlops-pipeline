@@ -1,7 +1,11 @@
-from great_expectations.core import ExpectationConfiguration, ExpectationSuite
+from great_expectations.core import ExpectationSuite, ExpectationConfiguration
 
 
 def build_expectation_suite() -> ExpectationSuite:
+    """
+    Builder used to retrieve an instance of the validation expectation suite.
+    """
+
     expectation_suite_energy_consumption = ExpectationSuite(
         expectation_suite_name="energy_consumption_suite"
     )
@@ -26,17 +30,7 @@ def build_expectation_suite() -> ExpectationSuite:
         )
     )
 
-    # # Datetime UTC
-    # # TODO: Build custom validation to ensure datetime_utc is type datetime
-    # expectation_suite_energy_consumption.add_expectation(
-    #     ExpectationConfiguration(
-    #         expectation_type="expect_column_values_to_be_type_datetime",
-    #         kwargs={
-    #             "column": "datetime_utc",
-    #             "strftime_format": "%Y-%m-%dT%H:%M:%S"
-    #         }
-    #     )
-    # )
+    # Datetime UTC
     expectation_suite_energy_consumption.add_expectation(
         ExpectationConfiguration(
             expectation_type="expect_column_values_to_not_be_null",
