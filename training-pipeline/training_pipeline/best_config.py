@@ -1,10 +1,11 @@
 import json
-from typing import Optional
-
 import fire
 import wandb
+
+from typing import Optional
+
 from training_pipeline import utils
-from training_pipeline.settings import CREDENTIALS, OUTPUT_DIR
+from training_pipeline.settings import SETTINGS, OUTPUT_DIR
 
 logger = utils.get_logger(__name__)
 
@@ -16,7 +17,13 @@ This will result in overriding the wrong run and getting the wrong config.
 """
 
 
-def run(sweep_id: Optional[str] = None):
+def upload(sweep_id: Optional[str] = None):
+    """Upload the best config from the given sweep to the "best_experiment" wandb Artifact.
+
+    Args:
+        sweep_id (Optional[str], optional): Sweep ID to look for the best config. If None, it will look for the last sweep in the cached last_sweep_metadata.json file. Defaults to None.
+    """
+
     if sweep_id is None:
         last_sweep_metadata = utils.load_json("last_sweep_metadata.json")
         sweep_id = last_sweep_metadata["sweep_id"]
@@ -25,7 +32,7 @@ def run(sweep_id: Optional[str] = None):
 
     api = wandb.Api()
     sweep = api.sweep(
-        f"{CREDENTIALS['WANDB_ENTITY']}/{CREDENTIALS['WANDB_PROJECT']}/{sweep_id}"
+        f"{SETTINGS['WANDB_ENTITY']}/{SETTINGS['WANDB_PROJECT']}/{sweep_id}"
     )
     best_run = sweep.best_run()
 
@@ -52,7 +59,7 @@ def run(sweep_id: Optional[str] = None):
             json.dump(best_config, f, indent=4)
 
         artifact = wandb.Artifact(
-            name=f"best_config",
+            name="best_config",
             type="model",
             metadata={"results": {"validation": dict(run.summary["validation"])}},
         )
@@ -61,8 +68,6 @@ def run(sweep_id: Optional[str] = None):
 
         run.finish()
 
-    return best_config
-
 
 if __name__ == "__main__":
-    fire.Fire(run)
+    fire.Fire(upload)
