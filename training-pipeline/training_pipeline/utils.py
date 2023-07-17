@@ -1,11 +1,13 @@
-import json
 import logging
-from pathlib import Path
-from typing import Optional, Union
-
+import json
 import joblib
 import pandas as pd
 import wandb
+
+from pathlib import Path
+from typing import Union, Optional
+
+
 from training_pipeline import settings
 
 
@@ -104,9 +106,11 @@ def init_wandb_run(
     run_id: Optional[str] = None,
     resume: Optional[str] = None,
     reinit: bool = False,
-    project: str = settings.CREDENTIALS["WANDB_PROJECT"],
-    entity: str = settings.CREDENTIALS["WANDB_ENTITY"],
+    project: str = settings.SETTINGS["WANDB_PROJECT"],
+    entity: str = settings.SETTINGS["WANDB_ENTITY"],
 ):
+    """Wrapper over the wandb.init function."""
+
     if add_timestamp_to_name:
         name = f"{name}_{pd.Timestamp.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
@@ -122,3 +126,31 @@ def init_wandb_run(
     )
 
     return run
+
+
+def check_if_artifact_exists(
+    artifact_name: str,
+    project: str = settings.SETTINGS["WANDB_PROJECT"],
+    entity: str = settings.SETTINGS["WANDB_ENTITY"],
+) -> bool:
+    """Utiliy function that checks if a W&B artifact exists."""
+
+    try:
+        get_artifact(artifact_name, project, entity)
+
+        return True
+    except wandb.errors.CommError:
+        return False
+
+
+def get_artifact(
+    artifact_name: str,
+    project: str = settings.SETTINGS["WANDB_PROJECT"],
+    entity: str = settings.SETTINGS["WANDB_ENTITY"],
+) -> wandb.Artifact:
+    """Get the latest version of a W&B artifact."""
+
+    api = wandb.Api()
+    artifact = api.artifact(f"{entity}/{project}/{artifact_name}:latest")
+
+    return artifact
