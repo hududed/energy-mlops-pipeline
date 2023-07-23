@@ -2,7 +2,7 @@
 name = "batch-prediction-pipeline"
 version = "0.1.0"
 description = ""
-authors = ["Iusztin Paul <p.e.iusztin@gmail.com>"]
+authors = ["Hud Wahab <hudwahab@gmail.com>"]
 readme = "README.md"
 packages = [{include = "batch_prediction_pipeline"}]
 
