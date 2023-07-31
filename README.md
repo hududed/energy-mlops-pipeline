@@ -14,37 +14,49 @@ We used the daily energy consumption from Denmark data which you can access [her
 
 # Orchestration
 ## Airflow
-### Setup
-
-You can read the official documentation here or follow the steps bellow for a fast start.
-
-**TODO:** This setup is used for development. Check out what I have to do for production.  
-
-### Install Python Package  
-**TODO:** Move the installation to poetry. Do I need it as this code is running directly in Airflow?
-
-```
-pip install "apache-airflow[celery]==2.5.2" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.2/constraints-3.7.txt"
-```
-
-# Run
-```
+Run:
+```shell
 # Move to the airflow directory.
 cd airflow
 
-# Download the docker-compose.yaml file
-curl -LfO 'https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yaml'
+# Make expected directories and environment variables
+mkdir -p ./logs ./plugins
+sudo chmod 777 ./logs ./plugins
 
-# Make expected directories and set an expected environment variable
-mkdir -p ./dags ./logs ./plugins
+# It will be used by Airflow to identify your user.
 echo -e "AIRFLOW_UID=$(id -u)" > .env
+# This shows where our project root directory is located.
+echo "ML_PIPELINE_ROOT_DIR=/opt/airflow/dags" >> .env
+```
 
-# Initialize the database
-docker-compose up airflow-init
+Now from the `airflow` directory move to the `dags` directory and run:
+```shell
+cd ./dags
+
+# Make a copy of the env default file.
+cp .env.default .env
+# Open the .env file and complete the FS_API_KEY, FS_PROJECT_NAME and WANDB_API_KEY credentials 
+
+# Create the folder where the program expects its GCP credentials.
+mkdir -p credentials/gcp/energy_consumption
+# Copy the GCP service credetials that gives you admin access to GCS. 
+cp -r /path/to/admin/gcs/credentials/admin-buckets.json credentials/gcp/energy_consumption
+# NOTE that if you want everything to work outside the box your JSON file should be called admin-buckets.json.
+# Otherwise, you have to manually configure the GOOGLE_CLOUD_SERVICE_ACCOUNT_JSON_PATH variable from the .env file. 
+```
+
+Now go back to the `airflow` directory and run the following:
+```shell
+cd ..
+
+# Initialize the Airflow database
+docker compose up airflow-init
 
 # Start up all services
-docker-compose up --build
+# Note: You should set up the private PyPi server credentials before running this command.
+docker compose --env-file .env up --build -d
 ```
+
 
 # Clean Up
 ```
