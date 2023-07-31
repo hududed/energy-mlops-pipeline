@@ -7,9 +7,10 @@ This is N-lesson course to design, implement, deploy and monitor an ML batch sys
 We used the daily energy consumption from Denmark data which you can access [here](https://www.energidataservice.dk/tso-electricity/ConsumptionDE35Hour).
 
 # Pipelines
-# 1. Feature Engineering Pipeline
-# 2. Training Pipeline
-# 3. Batch Prediction Pipeline
+**To install every project individually:**
+- [Feature Pipeline](/feature-pipeline/README.md)
+- [Training Pipeline](/training-pipeline/README.md)
+- [Batch Prediction Pipeline](/batch-prediction-pipeline/README.md)
 
 # Orchestration
 ## Airflow
